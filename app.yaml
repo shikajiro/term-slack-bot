@@ -1,0 +1,12 @@
+runtime: custom
+env: flex
+service: tellme-slack-bot
+
+runtime_config:
+  python_version: 3
+
+manual_scaling:
+  instances: 1
+
+includes:
+  - secret.yaml

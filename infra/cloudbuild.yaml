@@ -1,0 +1,25 @@
+steps:
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [
+        '-c',
+        "gcloud secrets versions access latest --secret=$_CREDENTIALS --format='get(payload.data)' | tr '_-' '/+' | base64 -d > ServiceAccountCredentials.json"
+    ]
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: /bin/sh
+    args:
+      - "-c"
+      - |
+        cat << EOF > secret.yaml
+        env_variables:
+          API_TOKEN: $_API_TOKEN
+          LOGGER_CHANNEL_ID: $_LOGGER_CHANNEL_ID
+          SPREADSHEET_KEY: $_SPREADSHEET_KEY
+        EOF
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args: [ '-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy' ]
+
+timeout: '1600s'
