@@ -20,6 +20,6 @@ steps:
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
-    args: [ '-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy' ]
+    args: [ '-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy infra/app.yaml' ]
 
 timeout: '1600s'
