@@ -30,4 +30,4 @@ jobs:
           push: true
           tags: |
             docker.pkg.github.com/${{ github.repository }}/term-slack-bot:${{ github.sha }}
-            docker.pkg.github.com/${{ github.repository }}/term-slack-bot:${{ steps.version.VERSION }}
+            docker.pkg.github.com/${{ github.repository }}/term-slack-bot:${{ steps.version.outputs.VERSION }}
