@@ -17,7 +17,7 @@ jobs:
         id: version
         run: |
           VERSION=$(echo ${{ github.ref }} | sed -e "s#refs/tags/##g")
-          echo ::set-output name=VERSION::$VERSION
+          echo ::set-output name=version::$VERSION
       - name: Log in to GitHub Docker Registry
         uses: docker/login-action@v1
         with:
@@ -30,4 +30,4 @@ jobs:
           push: true
           tags: |
             docker.pkg.github.com/${{ github.repository }}/term-slack-bot:${{ github.sha }}
-            docker.pkg.github.com/${{ github.repository }}/term-slack-bot:${{ steps.version.VERSION }}
+            docker.pkg.github.com/${{ github.repository }}/term-slack-bot:${{ VERSION }}
