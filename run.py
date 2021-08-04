@@ -22,7 +22,7 @@ SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
 ]
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name("serviceaccountcredentials.json", SCOPES)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("ServiceAccountCredentials.json", SCOPES)
 spread = gspread.authorize(credentials)
 
 
