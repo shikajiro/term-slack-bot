@@ -12,17 +12,17 @@ from slackbot.dispatcher import Message
 handler = logging.StreamHandler()
 logger = logging.getLogger(__name__)
 logger.addHandler(handler)
-logger.setLevel("debug")
+logger.setLevel("DEBUG")
 
-logger_channel_id = os.getenv("logger_channel_id")
-spreadsheet_key = os.getenv("spreadsheet_key")
-spreadsheet = f"https://docs.google.com/spreadsheets/d/{spreadsheet_key}"
-scopes = [
+LOGGER_CHANNEL_ID = os.getenv("LOGGER_CHANNEL_ID")
+SPREADSHEET_KEY = os.getenv("SPREADSHEET_KEY")
+SPREADSHEET = f"https://docs.google.com/spreadsheets/d/{SPREADSHEET_KEY}"
+SCOPES = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/spreadsheets',
 ]
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name("serviceaccountcredentials.json", scopes)
+credentials = ServiceAccountCredentials.from_json_keyfile_name("serviceaccountcredentials.json", SCOPES)
 spread = gspread.authorize(credentials)
 
 
@@ -39,15 +39,15 @@ def search(message: Message, something: str):
 
         if something == "help" or not something:
             message.reply(
-                f"知りたい用語を教えてほしいワン！ `@tellme 用語` で答えるワン。 用語集の管理は <{spreadsheet}|用語集> ここで管理しているワン。どんどん追加して欲しいワン。")
+                f"知りたい用語を教えてほしいワン！ `@tellme 用語` で答えるワン。 用語集の管理は <{SPREADSHEET}|用語集> ここで管理しているワン。どんどん追加して欲しいワン。")
             return
 
         # ログとして #bot_test_tellme に出力する
-        if logger_channel_id:
+        if LOGGER_CHANNEL_ID:
             text = f"user:{message.user['name']}, channel:{message.channel._body['name']}, query:{something}"
-            message._client.rtm_send_message(logger_channel_id, text)
+            message._client.rtm_send_message(LOGGER_CHANNEL_ID, text)
 
-        worksheet = spread.open_by_key(spreadsheet_key).sheet1
+        worksheet = spread.open_by_key(SPREADSHEET_KEY).sheet1
         query: str = something.strip().lower()
         query = jaconv.hira2kata(query)
         query = jaconv.h2z(query)
@@ -66,7 +66,7 @@ def search(message: Message, something: str):
                 res_text.append(f"*{title}*\n{row[1]}")
 
         if not res_text:
-            res_text.append(f"わからなかったワン・・・。意味が分かったら <{spreadsheet}|用語集> に追加して欲しいワン")
+            res_text.append(f"わからなかったワン・・・。意味が分かったら <{SPREADSHEET}|用語集> に追加して欲しいワン")
 
         message.reply("\n\n".join(res_text))
     except Exception as e:
