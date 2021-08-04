@@ -38,7 +38,7 @@ def search(message: Message, something: str):
         logger.debug(something)
 
         if something == "help" or not something:
-            message.send(
+            message.reply(
                 f"知りたい用語を教えてほしいワン！ `@tellme 用語` で答えるワン。 用語集の管理は <{spreadsheet}|用語集> ここで管理しているワン。どんどん追加して欲しいワン。")
             return
 
@@ -68,10 +68,10 @@ def search(message: Message, something: str):
         if not res_text:
             res_text.append(f"わからなかったワン・・・。意味が分かったら <{spreadsheet}|用語集> に追加して欲しいワン")
 
-        message.send("\n\n".join(res_text))
+        message.reply("\n\n".join(res_text))
     except Exception as e:
         logger.exception(e)
-        message.send("エラーが発生したワン・・・")
+        message.reply("エラーが発生したワン・・・")
 
 
 if __name__ == "__main__":
