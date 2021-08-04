@@ -9,10 +9,10 @@ from slackbot.bot import Bot
 from slackbot.bot import respond_to
 from slackbot.dispatcher import Message
 
-handler = logging.streamhandler()
-logger = logging.getlogger(__name__)
-logger.addhandler(handler)
-logger.setlevel("debug")
+handler = logging.StreamHandler()
+logger = logging.getLogger(__name__)
+logger.addHandler(handler)
+logger.setLevel("debug")
 
 logger_channel_id = os.getenv("logger_channel_id")
 spreadsheet_key = os.getenv("spreadsheet_key")
