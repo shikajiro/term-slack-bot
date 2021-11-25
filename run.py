@@ -36,6 +36,7 @@ def search(message: Message, something: str):
     try:
         logger.debug(message.body)
         logger.debug(message.user)
+        logger.debug(message.channel._body)
         logger.debug(something)
 
         if something == "help" or not something:
@@ -69,7 +70,8 @@ def search(message: Message, something: str):
             msg = ""
             if not res_text:
                 msg = "このクエリは見つかりませんでした"
-            text = f"@{message.user['name']} #{message.channel._body['name']} query:{something} {msg}"
+            channel_name = {message.channel._body['name']}
+            text = f"<@{message.user['display_name']}> <#{channel_name}> query:{something} {msg}"
             message._client.rtm_send_message(LOGGER_CHANNEL_ID, text)
 
         message.reply("\n\n".join(res_text))
