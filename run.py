@@ -62,16 +62,16 @@ def search(message: Message, something: str):
                 title = ",".join(row[0].split("\n"))
                 res_text.append(f"*{title}*\n{row[1]}")
 
-        if not res_text:
-            res_text.append(f"わからなかったワン・・・。意味が分かったら <{SPREADSHEET}|用語集> に追加して欲しいワン")
-
         # ログとして #bot_test_tellme に出力する
         if LOGGER_CHANNEL_ID:
             msg = ""
             if not res_text:
                 msg = f"\nでもこの用語は分からなかったワン・・・だれか <{SPREADSHEET}|用語集> に追加して欲しいワン"
-            text = f"<#{message.channel._body['id']}> で <@{message.user['id']}> が **{something}** を検索したワン。{msg}"
+            text = f"<#{message.channel._body['id']}> で <@{message.user['id']}> が <*{something}*> を検索したワン。{msg}"
             message._client.rtm_send_message(LOGGER_CHANNEL_ID, text)
+
+        if not res_text:
+            res_text.append(f"わからなかったワン・・・。意味が分かったら <{SPREADSHEET}|用語集> に追加して欲しいワン")
 
         message.reply("\n\n".join(res_text))
     except Exception as e:
