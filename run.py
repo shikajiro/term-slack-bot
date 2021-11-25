@@ -35,17 +35,13 @@ def main():
 def search(message: Message, something: str):
     try:
         logger.debug(message.body)
+        logger.debug(message.user)
         logger.debug(something)
 
         if something == "help" or not something:
             message.reply(
                 f"知りたい用語を教えてほしいワン！ `@tellme 用語` で答えるワン。 用語集の管理は <{SPREADSHEET}|用語集> ここで管理しているワン。どんどん追加して欲しいワン。")
             return
-
-        # ログとして #bot_test_tellme に出力する
-        if LOGGER_CHANNEL_ID:
-            text = f"user:{message.user['name']}, channel:{message.channel._body['name']}, query:{something}"
-            message._client.rtm_send_message(LOGGER_CHANNEL_ID, text)
 
         worksheet = spread.open_by_key(SPREADSHEET_KEY).sheet1
         query: str = something.strip().lower()
@@ -67,6 +63,14 @@ def search(message: Message, something: str):
 
         if not res_text:
             res_text.append(f"わからなかったワン・・・。意味が分かったら <{SPREADSHEET}|用語集> に追加して欲しいワン")
+
+        # ログとして #bot_test_tellme に出力する
+        if LOGGER_CHANNEL_ID:
+            msg = ""
+            if not res_text:
+                msg = "このクエリは見つかりませんでした"
+            text = f"@{message.user['name']} #{message.channel._body['name']} query:{something} {msg}"
+            message._client.rtm_send_message(LOGGER_CHANNEL_ID, text)
 
         message.reply("\n\n".join(res_text))
     except Exception as e:
