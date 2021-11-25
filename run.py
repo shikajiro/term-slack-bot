@@ -69,8 +69,8 @@ def search(message: Message, something: str):
         if LOGGER_CHANNEL_ID:
             msg = ""
             if not res_text:
-                msg = f"この用語は分からなかったワン・・・だれか <{SPREADSHEET}|用語集> に追加して欲しいワン"
-            text = f"<@{message.user['profile']['display_name']}> <#{message.channel._body['id']}> query:{something} {msg}"
+                msg = f"\nでもこの用語は分からなかったワン・・・だれか <{SPREADSHEET}|用語集> に追加して欲しいワン"
+            text = f"<#{message.channel._body['id']}> で <@{message.user['id']}> が **{something}** を検索したワン。{msg}"
             message._client.rtm_send_message(LOGGER_CHANNEL_ID, text)
 
         message.reply("\n\n".join(res_text))
