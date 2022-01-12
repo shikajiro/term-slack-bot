@@ -1,8 +1,10 @@
+import datetime
 import logging
 import os
 from typing import List
 
 import gspread
+from gspread.models import Worksheet
 import jaconv
 from oauth2client.service_account import ServiceAccountCredentials
 from slackbot.bot import Bot
@@ -61,6 +63,32 @@ def search(message: Message, something: str):
             elif (len(query) >= 2 and query in target) or query == target:
                 title = ",".join(row[0].split("\n"))
                 res_text.append(f"*{title}*\n{row[1]}")
+
+        # 分からなかった用語を集計する
+        if not res_text:
+            unknown: Worksheet = spread.open_by_key(SPREADSHEET_KEY).worksheet("unknown")
+            now = datetime.datetime.now().isoformat()
+            for i, row in enumerate(unknown.get_all_values()):
+                target: str = row[0].lower()
+                target = jaconv.hira2kata(target)
+                target = jaconv.h2z(target)
+                if query == target:
+                    logger.debug(f"用語が見つからなかったのでインクリメントします")
+                    # 用語の集計値をインクリメントする
+                    count = row[1]
+                    if count == "":
+                        count = 0
+                    else:
+                        count = int(count)
+                    unknown.update_cell(i + 1, 2, count + 1)
+                    unknown.update_cell(i + 1, 4, now)
+                    break
+            else:
+                logger.debug(f"用語が見つからなかったので新規追加します")
+                # 新たに用語を追加する
+                unknown.insert_rows(values=[[query, 1, now, now]],
+                                    row=len(unknown.get_all_values()) + 1,
+                                    value_input_option="USER_ENTERED")
 
         # ログとして #bot_test_tellme に出力する
         if LOGGER_CHANNEL_ID:
